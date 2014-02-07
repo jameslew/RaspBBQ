@@ -1,0 +1,15 @@
+{
+  "name": "Raspbbq",
+  "version": "0.0.0",
+  "description": "Raspbbq",
+  "main": "app.js",
+  "author": {
+    "name": "James",
+    "email": ""
+  },
+  "dependencies": {
+    "express": "3.4.4",
+    "jade": "*",
+    "stylus": "*"
+  }
+}
