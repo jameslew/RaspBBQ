@@ -10,13 +10,21 @@ var path = require('path');
 var raspBBQ = require('./routes/raspBBQ.js');
 var LCDPLATE = require('adafruit-i2c-lcd').plate;
 var sleep = require('sleep');
-
 var app = express();
 var lcd = new LCDPLATE ('/dev/i2c-1', 0x20);
-lcd.backlight(lcd.colors.RED);
-lcd.message("Welcome\nPitmaster");
-
+var netUtils = require('./utils.js');
 var RunLog = [];
+
+lcd.backlight(lcd.colors.RED);
+
+netUtils.getNetworkIPs(function (error, ip) {
+    console.log("ip: " + ip);
+    lcd.message("RaspBBQ 1.1\n" + ip);
+
+    if (error) {
+        console.log('error:', error);
+    }
+}, false);
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -41,7 +49,6 @@ var targetFood, targetPit, maxPit, minPit, probeTimer;
 app.get('/', routes.index);
 
 app.get('/bbqInit/:targetFood/:targetPit/:maxPit/:minPit', function(req, res) {
-//app.get('/bbqInit', function (req, res) {
 
     console.log(req.params);
 
@@ -52,21 +59,36 @@ app.get('/bbqInit/:targetFood/:targetPit/:maxPit/:minPit', function(req, res) {
 
     probeTimer = setInterval(function () {
 
-        var pitProbeVal, pitProbeVoltage = 0.0;
-        var foodProbeVal, foodProbeVoltage = 0.0;
+        var Probe1Temp, pitProbeTempF = 0.0;
+        var Probe2Temp, foodProbeTempF = 0.0;
+        var Probe3Temp, probe3TempF = 0.0;
+        var Probe4Temp, probe4TempF = 0.0;
 
-        raspBBQ.pitProbeGet(function (err, pitProbeTempF, pitProbeVoltVal) {
+        raspBBQ.readTemp(0, function (err, pitProbeTempF) {
             pitProbeVal = pitProbeTempF;
-            pitProbeVoltage = pitProbeVoltVal;
         });
 
-        raspBBQ.foodProbeGet(function (err, foodProbeTempF, foodProbeVoltVal) {
+        raspBBQ.readTemp(1, function (err, foodProbeTempF) {
             foodProbeVal = foodProbeTempF;
-            foodProbeVoltage = foodProbeVoltVal;
         });
 
-        RunLog.push({ pitProbe: pitProbeVal, pitVoltage: pitProbeVoltage, foodProbe: foodProbeVal, foodVoltage: foodProbeVoltage, timestamp: Date.now() });
-//        console.log("Runlog Length " + RunLog.length);
+        raspBBQ.readTemp(2, function (err, probe3TempF) {
+            probe3Val = probe3TempF;
+        });
+
+        raspBBQ.readTemp(3, function (err, probe4TempF) {
+            probe4Val = probe4TempF;
+        });
+        
+        while(RunLog.length > 250) {
+            RunLog.shift();
+        }
+
+        RunLog.push({ pitProbe: pitProbeVal, foodProbe: foodProbeVal, probe3Temp: probe3Val, probe4Temp: probe4Val, timestamp: Date.now() });
+        lcd.home();
+        lcd.clear();
+        lcd.message('Pit: ' + Math.round(pitProbeVal/100)*100 + '\nFood: ' + Math.round(foodProbeVal/100)*100);
+        console.log(RunLog.length);
 
     }, 1000 * 15);
 
@@ -97,14 +119,10 @@ app.get('/bbqTemps', function(req, res) {
     if (RunLog.length != 0) {
         var lastBbqTemps = RunLog[RunLog.length-1];
 //        console.log (lastBbqTemps);
-
-        lcd.home();
-        lcd.clear();
-        lcd.message('Pit: ' + lastBbqTemps.pitProbe + '\nFood: ' + lastBbqTemps.foodProbe);
 //        console.log('Pit: ' + lastBbqTemps.pitProbe + 'Food: ' + lastBbqTemps.foodProbe);
 
-        res.send([{ pitProbe: lastBbqTemps.pitProbe }, { pitVoltage: lastBbqTemps.pitVoltage }, { foodProbe: lastBbqTemps.foodProbe }, { foodVoltage: lastBbqTemps.foodVoltage }]);
-    } else res.send([{ pitProbe: 0 }, { pitVoltage: 0 }, { foodProbe: 0 }, { foodVoltage: 0 }]);
+        res.send([{ pitProbe: lastBbqTemps.pitProbe }, { foodProbe: lastBbqTemps.foodProbe }, { probe3: lastBbqTemps.probe3Temp }, { probe4: lastBbqTemps.probe4Temp }]);
+    } else res.send([{ pitProbe: 0 }, { foodProbe: 0 }, { probe3: 0 }, { probe4: 0 }]);
     
 });
 
@@ -118,3 +136,4 @@ app.get('/bbqTest/:pitProbe/:foodProbe', function(req, res) {
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
+
