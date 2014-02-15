@@ -80,14 +80,15 @@ app.get('/bbqInit/:targetFood/:targetPit/:maxPit/:minPit', function(req, res) {
             probe4Val = probe4TempF;
         });
         
-        while(RunLog.length > 250) {
+        //keep the list at 250 items, we don't need that much history.
+        while(RunLog.length > 249) {
             RunLog.shift();
         }
 
         RunLog.push({ pitProbe: pitProbeVal, foodProbe: foodProbeVal, probe3Temp: probe3Val, probe4Temp: probe4Val, timestamp: Date.now() });
         lcd.home();
         lcd.clear();
-        lcd.message('Pit: ' + Math.round(pitProbeVal/100)*100 + '\nFood: ' + Math.round(foodProbeVal/100)*100);
+        lcd.message('Pit: ' + Math.round(pitProbeVal*100)/100 + '\nFood: ' + Math.round(foodProbeVal*100)/100);
         console.log(RunLog.length);
 
     }, 1000 * 15);

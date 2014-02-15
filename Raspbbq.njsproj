@@ -31,12 +31,9 @@
   <ItemGroup>
     <Compile Include="app.js" />
     <Compile Include="routes\i2c_io.js" />
-    <Compile Include="routes\index.js" />
     <Compile Include="routes\io.js" />
     <Compile Include="routes\mcp3424_nodejs_adc.js" />
     <Compile Include="routes\raspBBQ.js" />
-    <Compile Include="routes\server.js" />
-    <Compile Include="routes\user.js" />
     <Content Include="package.json" />
     <Content Include="public\stylesheets\style.styl" />
     <Content Include="README.md" />
