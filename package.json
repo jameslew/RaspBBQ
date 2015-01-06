@@ -1,6 +1,6 @@
 {
     "name": "Raspbbq",
-    "version": "0.3.1",
+    "version": "0.3.2",
     "description": "Raspbbq",
     "main": "app.js",
     "author": {
@@ -16,6 +16,7 @@
     "jade": "~1.8.2",
     "stylus": "~0.49.3",
     "adafruit-i2c-lcd": "~0.0.3",
-    "request": "~2.51.0"
+    "request": "~2.51.0",
+    "i2c": "~0.1.6"
   }
 }
