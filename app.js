@@ -8,6 +8,7 @@ var http = require('http');
 var path = require('path');
 var raspBBQ = require('./routes/raspBBQ.js');
 var LCDPLATE = require('adafruit-i2c-lcd').plate;
+var favicon = require('serve-favicon');
 var sleep = require('sleep');
 var app = express();
 var lcd = new LCDPLATE('/dev/i2c-1', 0x20);
@@ -30,7 +31,7 @@ netUtils.getNetworkIPs(function (error, ip) {
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-app.use(express.favicon());
+app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
