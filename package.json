@@ -19,6 +19,8 @@
     "request": "~2.51.0",
     "i2c": "~0.1.6",
     "sleep": "~1.2.0",
-    "serve-favicon": "~2.2.0"
+    "serve-favicon": "~2.2.0",
+    "morgan": "~1.5.1",
+    "serve-static": "~1.7.2"
   }
 }

@@ -9,6 +9,8 @@ var path = require('path');
 var raspBBQ = require('./routes/raspBBQ.js');
 var LCDPLATE = require('adafruit-i2c-lcd').plate;
 var favicon = require('serve-favicon');
+var logger = require('morgan');
+var serveStatic = require('serve-static')
 var sleep = require('sleep');
 var app = express();
 var lcd = new LCDPLATE('/dev/i2c-1', 0x20);
@@ -38,7 +40,7 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(serveStatic(path.join(__dirname, 'public')));
 
 // development only
 if ('development' == app.get('env')) {
