@@ -35,6 +35,7 @@
     <Compile Include="routes\mcp3424_nodejs_adc.js" />
     <Compile Include="routes\raspBBQ.js" />
     <Content Include="package.json" />
+    <Content Include="public\images\favicon.ico" />
     <Content Include="public\stylesheets\style.styl" />
     <Content Include="README.md" />
     <Content Include="views\index.jade" />
