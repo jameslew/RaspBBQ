@@ -14,6 +14,7 @@ var bodyParser = require('body-parser');
 var serveStatic = require('serve-static');
 var methodOverride = require('method-override');
 var sleep = require('sleep');
+var errorHandler = require('errorhandler');
 var app = express();
 var lcd = new LCDPLATE('/dev/i2c-1', 0x20);
 var netUtils = require('./utils.js');
@@ -45,7 +46,7 @@ app.use(serveStatic(path.join(__dirname, 'public')));
 
 // development only
 if ('development' == app.get('env')) {
-    app.use(express.errorHandler());
+    app.use(errorHandler());
 }
 
 var targetFood, targetPit, maxPit, minPit, probeTimer;
