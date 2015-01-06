@@ -12,9 +12,9 @@
         "url": "http://github.com/jameslew/RaspBBQ" 
     },
   "dependencies": {
-    "express": "~3.4.4",
-    "jade": "~1.1.5",
-    "stylus": "~0.42.2",
+    "express": "~4.10.7",
+    "jade": "~1.8.2",
+    "stylus": "~0.49.3",
     "adafruit-i2c-lcd": "~0.0.3",
     "request": "~2.51.0"
   }
