@@ -3,7 +3,7 @@
  */
 
 var express = require('express');
-var routes = require('./routes');
+//var routes = require('./routes');
 var http = require('http');
 var path = require('path');
 var raspBBQ = require('./routes/raspBBQ.js');
@@ -51,7 +51,7 @@ if ('development' == app.get('env')) {
 
 var targetFood, targetPit, maxPit, minPit, probeTimer;
 
-app.get('/', routes.index);
+//app.get('/', routes.index);
 
 app.get('/bbqInit/:targetFood/:targetPit/:maxPit/:minPit', function (req, res) {
     
