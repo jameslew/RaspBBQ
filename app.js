@@ -40,7 +40,6 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(methodOverride());
-app.use(app.router);
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(serveStatic(path.join(__dirname, 'public')));
 
