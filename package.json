@@ -1,15 +1,23 @@
 {
-  "name": "Raspbbq",
-  "version": "0.0.0",
-  "description": "Raspbbq",
-  "main": "app.js",
-  "author": {
-    "name": "James",
-    "email": ""
-  },
+    "name": "Raspbbq",
+    "version": "0.3.1",
+    "description": "Raspbbq",
+    "main": "app.js",
+    "author": {
+        "name": "James",
+        "email": "jameslew@live.com"
+    },
+    "repository": {
+        "type": "git",
+        "url": "http://github.com/jameslew/RaspBBQ" 
+    },
   "dependencies": {
     "express": "~3.4.4",
     "jade": "~1.1.5",
-    "stylus": "~0.42.2"
+    "stylus": "~0.42.2",
+    "adafruit-i2c-lcd": "~0.0.3",
+    "raspBBQ": "file:../routes/raspBBQ.js",
+    "utils": "file:./utils.js",
+    "request": "~2.51.0"
   }
 }
