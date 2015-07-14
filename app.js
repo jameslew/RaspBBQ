@@ -99,7 +99,7 @@ probeTimer = setInterval(function () {
     //    console.log(body);
     //});
     request({
-        uri: 'https://graph.api.smartthings.com/api/smartapps/installations/1fdbbf54-7483-4d4c-8b9e-5d93d6ec1252/updateTemps/'+ Math.round(pitProbeVal * 100) / 100 + '/'+ Math.round(foodProbeVal * 100) / 100+'?access_token=83c2f0fa-36d2-4464-bbd3-b5fb858d4ed9',  
+        uri: 'https://graph.api.smartthings.com/api/smartapps/installations/1fdbbf54-7483-4d4c-8b9e-5d93d6ec1252/updateTemps/'+ Math.round(pitProbeVal * 100) / 100 + '/'+ Math.round(foodProbeVal * 100) / 100+'?access_token=51ad19ab-c979-4ce3-a838-f2f9b378f0c4',  
         method: 'PUT'
     }
     , function (error, response, body) {
