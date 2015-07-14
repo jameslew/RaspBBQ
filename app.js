@@ -53,68 +53,68 @@ var targetFood, targetPit, maxPit, minPit, probeTimer;
 
 //app.get('/', routes.index);
 
-app.get('/bbqInit/:targetFood/:targetPit/:maxPit/:minPit', function (req, res) {
+//app.get('/bbqInit/:targetFood/:targetPit/:maxPit/:minPit', function (req, res) {
     
-    console.log(req.params);
+//    console.log(req.params);
     
-    var targetFood = req.params.targetFood;
-    var targetPit = req.params.targetPit;
-    var maxPit = req.params.maxPit;
-    var minPit = req.params.minPit;
+//    var targetFood = req.params.targetFood;
+//    var targetPit = req.params.targetPit;
+//    var maxPit = req.params.maxPit;
+//    var minPit = req.params.minPit;
     
-    probeTimer = setInterval(function () {
+probeTimer = setInterval(function () {
         
-        var Probe1Temp, pitProbeTempF = 0.0;
-        var Probe2Temp, foodProbeTempF = 0.0;
-        var Probe3Temp, probe3TempF = 0.0;
-        var Probe4Temp, probe4TempF = 0.0;
+    var Probe1Temp, pitProbeTempF = 0.0;
+    var Probe2Temp, foodProbeTempF = 0.0;
+    var Probe3Temp, probe3TempF = 0.0;
+    var Probe4Temp, probe4TempF = 0.0;
         
-        raspBBQ.readTemp(0, function (err, pitProbeTempF) {
-            pitProbeVal = pitProbeTempF;
-        });
+    raspBBQ.readTemp(0, function (err, pitProbeTempF) {
+        pitProbeVal = pitProbeTempF;
+    });
         
-        raspBBQ.readTemp(1, function (err, foodProbeTempF) {
-            foodProbeVal = foodProbeTempF;
-        });
+    raspBBQ.readTemp(1, function (err, foodProbeTempF) {
+        foodProbeVal = foodProbeTempF;
+    });
         
-        raspBBQ.readTemp(2, function (err, probe3TempF) {
-            probe3Val = probe3TempF;
-        });
+    raspBBQ.readTemp(2, function (err, probe3TempF) {
+        probe3Val = probe3TempF;
+    });
         
-        raspBBQ.readTemp(3, function (err, probe4TempF) {
-            probe4Val = probe4TempF;
-        });
+    raspBBQ.readTemp(3, function (err, probe4TempF) {
+        probe4Val = probe4TempF;
+    });
         
-        //keep the list at 250 items, we don't need that much history.
-        while (RunLog.length > 249) {
-            RunLog.shift();
-        }
+    //keep the list at 250 items, we don't need that much history.
+    while (RunLog.length > 249) {
+        RunLog.shift();
+    }
         
-        RunLog.push({ pitProbe: pitProbeVal, foodProbe: foodProbeVal, probe3Temp: probe3Val, probe4Temp: probe4Val, timestamp: Date.now() });
-        request({
-            uri: 'http://grovestreams.com:80/api/feed?api_key=0b606c5f-966b-320b-befa-3b8a3a237618&compid=bbqPit&pitProbe=' + Math.round(pitProbeVal * 100) / 100 + '&foodProbe=' + Math.round(foodProbeVal * 100) / 100,
-            method: 'PUT'
-            }
-            , function (error, response, body) {
-            console.log(body);
-        });
-        request({
-            uri: 'https://graph.api.smartthings.com/api/smartapps/installations/1fdbbf54-7483-4d4c-8b9e-5d93d6ec1252/updateTemps/'+ Math.round(pitProbeVal * 100) / 100 + '/'+ Math.round(foodProbeVal * 100) / 100+'?access_token=6d7a05ba-e928-4eb4-8fa4-91028f60a526',  
-            method: 'PUT'
+    RunLog.push({ pitProbe: pitProbeVal, foodProbe: foodProbeVal, probe3Temp: probe3Val, probe4Temp: probe4Val, timestamp: Date.now() });
+    request({
+        uri: 'http://grovestreams.com:80/api/feed?api_key=0b606c5f-966b-320b-befa-3b8a3a237618&compid=bbqPit&pitProbe=' + Math.round(pitProbeVal * 100) / 100 + '&foodProbe=' + Math.round(foodProbeVal * 100) / 100,
+        method: 'PUT'
         }
         , function (error, response, body) {
-            console.log(body);
-        });
-        lcd.home();
-        lcd.clear();
-        lcd.message('Pit: ' + Math.round(pitProbeVal * 100) / 100 + '\nFood: ' + Math.round(foodProbeVal * 100) / 100);
-        console.log(RunLog.length);
+        console.log(body);
+    });
+    request({
+        uri: 'https://graph.api.smartthings.com/api/smartapps/installations/1fdbbf54-7483-4d4c-8b9e-5d93d6ec1252/updateTemps/'+ Math.round(pitProbeVal * 100) / 100 + '/'+ Math.round(foodProbeVal * 100) / 100+'?access_token=6d7a05ba-e928-4eb4-8fa4-91028f60a526',  
+        method: 'PUT'
+    }
+    , function (error, response, body) {
+        console.log(body);
+    });
+    lcd.home();
+    lcd.clear();
+    lcd.message('Pit: ' + Math.round(pitProbeVal * 100) / 100 + '\nFood: ' + Math.round(foodProbeVal * 100) / 100);
+    console.log(RunLog.length);
 
-    }, 1000 * 300);
+}, 1000 * 60);
     
-    res.send([{}]);
+res.send([{}]);
 
-});
+//});
 
 app.get('/bbqEnd', function (req, res) {
     
