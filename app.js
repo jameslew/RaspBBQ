@@ -112,7 +112,7 @@ probeTimer = setInterval(function () {
 
 }, 1000 * 60);
     
-res.send([{}]);
+//res.send([{}]);
 
 //});
 
