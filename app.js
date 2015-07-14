@@ -140,8 +140,8 @@ if (process.argv.length != 4) {
     process.exit();
 }
 
-var CLIENT_ID = "6a8b262f-b5b6-4978-b304-85b972bebc63";
-var CLIENT_SECRET = "b27468b4-f014-446f-982c-0c886f8445e1";
+var CLIENT_ID = process.argv[2];
+var CLIENT_SECRET = process.argv[3];
 
 var endpoints_uri = 'https://graph.api.smartthings.com/api/smartapps/endpoints';
 
