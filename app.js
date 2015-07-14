@@ -116,18 +116,6 @@ probeTimer = setInterval(function () {
 
 //});
 
-app.get('/bbqEnd', function (req, res) {
-    
-    lcd.home();
-    lcd.clear();
-    lcd.backlight(lcd.colors.OFF);
-    lcd.close();
-    clearInterval(probeTimer);
-    
-    res.send([{}]);
-
-});
-
 app.get('/bbqDump', function (req, res) {
     
     res.send([RunLog]);
@@ -146,12 +134,63 @@ app.get('/bbqTemps', function (req, res) {
 
 });
 
-app.get('/bbqTest/:pitProbe/:foodProbe', function (req, res) {
-    lcd.home();
-    lcd.clear();
-    lcd.message('Pit: ' + req.params.pitProbe + '\nFood: ' + req.params.foodProbe);
-    res.send([{ pitProbe: req.params.pitProbe }, { foodProbe: req.params.foodProbe }]);
+// expected commandline node.js script CLIENT_ID CLIENT_SECRET
+if (process.argv.length != 4) {
+    console.log("usage: " + process.argv[0] + " " + process.argv[1] + " CLIENT_ID CLIENT_SECRET");
+    process.exit();
+}
+
+var CLIENT_ID = "6a8b262f-b5b6-4978-b304-85b972bebc63";
+var CLIENT_SECRET = "b27468b4-f014-446f-982c-0c886f8445e1";
+
+var endpoints_uri = 'https://graph.api.smartthings.com/api/smartapps/endpoints';
+
+var oauth2 = require('simple-oauth2')({
+    clientID: CLIENT_ID,
+    clientSecret: CLIENT_SECRET,
+    site: 'https://graph.api.smartthings.com'
 });
+
+// Authorization uri definition 
+var authorization_uri = oauth2.authCode.authorizeURL({
+    redirect_uri: 'http://localhost:3000/callback',
+    scope: 'app',
+    state: '3(#0/!~'
+});
+
+// Initial page redirecting to Github 
+app.get('/auth', function (req, res) {
+    res.redirect(authorization_uri);
+});
+
+// Callback service parsing the authorization token and asking for the access token 
+app.get('/callback', function (req, res) {
+    var code = req.query.code;
+    // console.log('/callback got code' + code);
+    oauth2.authCode.getToken({
+        code: code,
+        redirect_uri: 'http://localhost:3000/callback'
+    }, saveToken);
+    
+    function saveToken(error, result) {
+        if (error) { console.log('Access Token Error', error.message); }
+        
+        // result.access_token is the token, get the endpoint
+        var bearer = result.access_token
+        var sendreq = { method: "GET", uri: endpoints_uri + "?access_token=" + result.access_token };
+        request(sendreq, function (err, res1, body) {
+            var endpoints = JSON.parse(body);
+            // we just show the final access URL and Bearer code
+            var access_url = endpoints[0].url
+            res.send('<pre>https://graph.api.smartthings.com/' + access_url + '</pre><br><pre>Bearer ' + bearer + '</pre>');
+        });
+    }
+});
+
+app.get('/', function (req, res) {
+    res.send('<a href="/auth">Connect with SmartThings</a>');
+});
+
 
 http.createServer(app).listen(app.get('port'), function () {
     console.log('Express server listening on port ' + app.get('port'));
