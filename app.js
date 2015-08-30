@@ -140,6 +140,10 @@ if (process.argv.length != 4) {
     process.exit();
 }
 
+// testing
+//id: 6a8b262f-b5b6-4978-b304-85b972bebc63
+//secret: b27468b4-f014-446f-982c-0c886f8445e1
+
 var CLIENT_ID = process.argv[2];
 var CLIENT_SECRET = process.argv[3];
 
